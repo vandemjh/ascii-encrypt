@@ -5,6 +5,8 @@ if (len(sys.argv) != 6):
     exit()
 
 operation = sys.argv[1]
+file1 = sys.argv[2]
+file2 = sys.argv[3]
 a = int(sys.argv[4])
 b = int(sys.argv[5])
 
@@ -39,8 +41,6 @@ def egcd (a , b):  #integers with a > b > 0
     return d, s, t # as+b t = d and gcd ( a , b ) = d
 
 def encrypt(input, a , b):
-    file1 = sys.argv[2]
-    file2 = sys.argv[3]
     toReturn = ""
     for char in input:
         # chr function changes value to ascii char
@@ -49,8 +49,6 @@ def encrypt(input, a , b):
     return toReturn
 
 def decrypt(input, a , b):
-    file1 = sys.argv[2]
-    file2 = sys.argv[3]
     toReturn = ""
     return toReturn
 
