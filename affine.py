@@ -10,11 +10,6 @@ file2 = sys.argv[3]
 a = int(sys.argv[4])
 b = int(sys.argv[5])
 
-#TODO this
-if (a % 2 == 0 or a < 1 or a > 127 or b < 1 or b > 127):
-    print("The key pair (", a, ", ", b, ") is invalid, please select another key.")
-    exit();
-
 # Given a character of our plaintext message m,
 # the encryption function E(m, a, b) is given by:
 # E(m, a, b) = (a · m + b) mod 128.
@@ -41,6 +36,9 @@ def egcd (a , b):  #integers with a > b > 0
     return d, s, t # as+b t = d and gcd ( a , b ) = d
 
 def encrypt(input, a , b):
+    if (a % 2 == 0 or a < 1 or a > 127 or b < 1 or b > 127):
+        print("The key pair (", a, ", ", b, ") is invalid, please select another key.")
+        exit();
     toReturn = ""
     for char in input:
         # chr function changes value to ascii char
@@ -49,6 +47,9 @@ def encrypt(input, a , b):
     return toReturn
 
 def decrypt(input, a , b):
+    if (a % 2 == 0 or a < 1 or a > 127 or b < 1 or b > 127):
+        print("The key pair (", a, ", ", b, ") is invalid, please select another key.")
+        exit();
     toReturn = ""
     return toReturn
 
