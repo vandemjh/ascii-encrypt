@@ -19,20 +19,11 @@ def inverseMod(a, m):
             return x
     return 1
 
-# Given integers a and b
-# finds d, s, and t such that
-# d = a ∗ s + b ∗ t and d = gcd ( a , b )
-def egcd (a , b):  #integers with a > b > 0
-    s = 1 ; t = 0 ; u = 0 ; v = 1
-    while b != 0:
-        q = a / b
-        a , b = b , a % b
-        s , t , u , v = u , v , s - u * q , t - v * q
-        d = a
-    return d, s, t # as+b t = d and gcd ( a , b ) = d
+def isValid(a, b):
+    return (math.gcd(a, 128) != 1 or a < 1 or a > 127 or b < 1 or b > 127)
 
 def encrypt(input, a , b):
-    if (math.gcd(a,b) != 1 or a < 1 or a > 127 or b < 1 or b > 127):
+    if (isValid(a, b)):
         print("The key pair (", a, ", ", b, ") is invalid, please select another key.")
         exit()
     toReturn = ""
@@ -43,7 +34,7 @@ def encrypt(input, a , b):
     return toReturn
 
 def decrypt(input, a , b):
-    if (math.gcd(a,b) != 1 or a < 1 or a > 127 or b < 1 or b > 127):
+    if (isValid(a, b)):
         print("The key pair (", a, ", ", b, ") is invalid, please select another key.")
         exit()
     toReturn = ""
@@ -57,17 +48,17 @@ def decypher(input, output, dictionary):
 
 # --- Command Line Parsing ---#
 
-if (len(sys.argv) != 6):
-    print("Invalid number of arguments, 5 expected\n")
+if (len(sys.argv) < 3):
+    print("Invalid number of arguments")
     exit()
 
 arg1 = sys.argv[1]
 arg2 = sys.argv[2]
 arg3 = sys.argv[3]
 arg4 = sys.argv[4]
-arg5 = sys.argv[5]
 
 if (str(arg1) == "encrypt"):
+    arg5 = sys.argv[5]
     reader = open(str(arg2), "r")
     writer = open(str(arg3),"w")
     input = reader.read()
@@ -79,6 +70,7 @@ if (str(arg1) == "encrypt"):
     writer.close()
 
 elif (str(arg1) == "decrypt"):
+    arg5 = sys.argv[5]
     reader = open(str(arg2), "r")
     writer = open(str(arg3),"w")
     input = reader.read()
@@ -88,3 +80,46 @@ elif (str(arg1) == "decrypt"):
     writer.write(decrypted)
     reader.close()
     writer.close()
+
+elif (str(arg1) == "decipher"):
+    ciphertext = open(str(arg2), "r")
+    ciphertext = ciphertext.read()
+    output = open(str(arg3),"w")
+    dictionary = open(str(arg4), "r")
+    dictionary = dictionary.read()
+    dictionary = dictionary.split("\n")
+    maxWords = 0
+    maxA = -1
+    maxB = -1
+    breaker = False
+    for a in range(0, 128):
+        if (breaker):
+            break
+        for b in range(0, 128):
+            if (breaker):
+                break
+            if (not isValid(a, b)):
+                deciphered = decrypt(ciphertext, a, b)
+                decipheredSplit = deciphered.split();
+                wordCount = 0
+                for word in decipheredSplit:
+                    #print(word)
+                    if word in dictionary:
+                        wordCount = wordCount + 1
+                        if (maxWords <= wordCount):
+                            maxWords = wordCount
+                            maxA = a
+                            maxB = b
+                        #Tried a break out, unreliable
+                        if (maxWords == len(decipheredSplit) and decipheredSplit[0] in dictionary and decipheredSplit[len(decipheredSplit) - 1] in dictionary):
+                            print(maxWords)
+                            print(decipheredSplit)
+                            breaker = True
+                            break
+
+    if (maxA != -1 and maxB != -1):
+        output.write(str(a-1))
+        output.write(str(" "))
+        output.write(str(b-1))
+        output.write("\nDECIPHERED MESSAGE:\n")
+        output.write(deciphered)
